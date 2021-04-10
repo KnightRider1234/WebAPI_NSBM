@@ -10,7 +10,7 @@ using WebAPI.Data;
 namespace WebAPI.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210320184814_InitialCreate")]
+    [Migration("20210327172139_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,19 +21,19 @@ namespace WebAPI.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("WebAPI.Models.CitizenLocation", b =>
+            modelBuilder.Entity("CitizenLocation", b =>
                 {
-                    b.Property<int>("CitizenId")
+                    b.Property<int>("CitizensId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("LocationsId")
                         .HasColumnType("int");
 
-                    b.HasKey("CitizenId", "LocationId");
+                    b.HasKey("CitizensId", "LocationsId");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("LocationsId");
 
-                    b.ToTable("CitizenLocations");
+                    b.ToTable("CitizenLocation");
                 });
 
             modelBuilder.Entity("WebAPI.Models.Location", b =>
@@ -115,23 +115,19 @@ namespace WebAPI.Data.Migrations
                     b.ToTable("PHIs");
                 });
 
-            modelBuilder.Entity("WebAPI.Models.CitizenLocation", b =>
+            modelBuilder.Entity("CitizenLocation", b =>
                 {
-                    b.HasOne("WebAPI.Models.Citizen", "Citizen")
-                        .WithMany("CitizenLocations")
-                        .HasForeignKey("CitizenId")
+                    b.HasOne("WebAPI.Models.Citizen", null)
+                        .WithMany()
+                        .HasForeignKey("CitizensId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebAPI.Models.Location", "Location")
-                        .WithMany("CitizenLocations")
-                        .HasForeignKey("LocationId")
+                    b.HasOne("WebAPI.Models.Location", null)
+                        .WithMany()
+                        .HasForeignKey("LocationsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Citizen");
-
-                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("WebAPI.Models.Citizen", b =>
@@ -150,16 +146,6 @@ namespace WebAPI.Data.Migrations
                         .HasForeignKey("WebAPI.Models.PHI", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("WebAPI.Models.Location", b =>
-                {
-                    b.Navigation("CitizenLocations");
-                });
-
-            modelBuilder.Entity("WebAPI.Models.Citizen", b =>
-                {
-                    b.Navigation("CitizenLocations");
                 });
 #pragma warning restore 612, 618
         }

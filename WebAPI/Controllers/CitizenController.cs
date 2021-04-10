@@ -26,10 +26,9 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<CitizenDTO>>> Get()
         {
-            var locationList = new List<Location>();
             var citizenDtoList = new List<CitizenDTO>();
 
-            var citizenList = await _context.Citizens.Include(x => x.CitizenLocations).ThenInclude(x => x.Location).ToListAsync();
+            var citizenList = await _context.Citizens.Include(x => x.Locations).ToListAsync();
 
             foreach (var c in citizenList)
             {
@@ -43,21 +42,9 @@ namespace WebAPI.Controllers
                     UserName = c.UserName,
                     HealthStatus = c.HealthStatus,
                     Address = c.Address,
-                    Telephone = c.Telephone
+                    Telephone = c.Telephone,
+                    Locations = c.Locations.ToList()
                 };
-
-                foreach (var l in c.CitizenLocations)
-                {
-                    var location = new Location
-                    {
-                        LocName = l.Location.LocName,
-                        Longitude = l.Location.Longitude,
-                        Latitude = l.Location.Latitude
-                    };
-                    locationList.Add(location);
-                }
-
-                citizen.Locations = locationList;
 
                 citizenDtoList.Add(citizen);
             }
@@ -67,12 +54,10 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CitizenDTO>> Get(int? id)
         {
-            var locationList = new List<Location>();
-
             if (id == null) return NotFound();
 
-            var c = await _context.Citizens.Include(x => x.CitizenLocations).ThenInclude(x => x.Location).Where(x => x.Id == id).FirstOrDefaultAsync();
-            
+            var c = await _context.Citizens.Include(x => x.Locations).Where(x => x.Id == id).FirstOrDefaultAsync();
+
             if (c == null) return NotFound();
 
             var citizenDto = new CitizenDTO
@@ -85,21 +70,9 @@ namespace WebAPI.Controllers
                 UserName = c.UserName,
                 HealthStatus = c.HealthStatus,
                 Address = c.Address,
-                Telephone = c.Telephone
+                Telephone = c.Telephone,
+                Locations = c.Locations.ToList()
             };
-
-            foreach (var l in c.CitizenLocations)
-            {
-                var location = new Location
-                {
-                    LocName = l.Location.LocName,
-                    Longitude = l.Location.Longitude,
-                    Latitude = l.Location.Latitude
-                };
-                locationList.Add(location);
-            }
-
-            citizenDto.Locations = locationList;
 
             return citizenDto;
         }
@@ -151,7 +124,7 @@ namespace WebAPI.Controllers
             try
             {
                 var citizenToDelete = _context.Citizens.FirstOrDefault(x => x.Id == id);
-                if(citizenToDelete.HealthStatus == Models.Enums.HealthStatus.Deceased)
+                if (citizenToDelete.HealthStatus == Models.Enums.HealthStatus.Deceased)
                 {
                     _context.Entry(citizenToDelete).State = EntityState.Deleted;
                 }

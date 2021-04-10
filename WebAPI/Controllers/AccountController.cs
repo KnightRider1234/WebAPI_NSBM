@@ -35,60 +35,26 @@ namespace WebAPI.Controllers
                 //HMAC is IDisposable
                 using var hmac = new HMACSHA512();
 
-                if(registerDto.Type == Models.Enums.UserType.PHI)
+                var user = new User
                 {
-                    var phi = new PHI
-                    {
-                        FirstName = registerDto.FirstName,
-                        LastName = registerDto.LastName,
-                        Dob = registerDto.Dob,
-                        UserName = registerDto.UserName,
-                        //ComputeHash method takes byte[] convert password string to byte[]
-                        PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                        PasswordSalt = hmac.Key,
-                        Type = registerDto.Type,
-                    };
-                    _context.PHIs.Add(phi);
-                }
-                else
-                {
-                    var citizen = new Citizen
-                    {
-                        FirstName = registerDto.FirstName,
-                        LastName = registerDto.LastName,
-                        Dob = registerDto.Dob,
-                        UserName = registerDto.UserName,
-                        PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                        PasswordSalt = hmac.Key,
-                        Type = registerDto.Type,
-                        HealthStatus = registerDto.HealthStatus,
-                        Address = registerDto.Address,
-                        Telephone = registerDto.Telephone,
-                    };
+                    FirstName = registerDto.FirstName,
+                    LastName = registerDto.LastName,
+                    Dob = registerDto.Dob,
+                    UserName = registerDto.UserName,
+                    //ComputeHash method takes byte[] convert password string to byte[]
+                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                    PasswordSalt = hmac.Key,
+                    Type = registerDto.Type,
+                    
+                };
 
-                    var location = new Location
-                    {
-                        LocName = registerDto.Location.LocName,
-                        Latitude = registerDto.Location.Latitude,
-                        Longitude = registerDto.Location.Longitude
-                    };
-
-                    citizen.CitizenLocations = new List<CitizenLocations>
-                    {
-                        new CitizenLocations
-                        {
-                            Citizen = citizen,
-                            Location = location
-                        }
-                    };
-                    _context.Citizens.Add(citizen);
-                }
+                _context.Users.Add(user);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists, " + "see your system administrator.");
-                _logger.LogInformation(this.GetType().Name + "\n" + ex);
+                _logger.LogInformation(this.GetType().Name + "\n" + ex + "\n" + ModelState.Select(x => x.Value).ToList());
             }
 
             return Ok();
@@ -118,6 +84,5 @@ namespace WebAPI.Controllers
         {
             return await _context.Users.AnyAsync(x => x.UserName == username);
         }
-    
-}
+    }
 }

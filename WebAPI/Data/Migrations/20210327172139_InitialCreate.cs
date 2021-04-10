@@ -79,39 +79,39 @@ namespace WebAPI.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CitizenLocations",
+                name: "CitizenLocation",
                 columns: table => new
                 {
-                    CitizenId = table.Column<int>(type: "int", nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: false)
+                    CitizensId = table.Column<int>(type: "int", nullable: false),
+                    LocationsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CitizenLocations", x => new { x.CitizenId, x.LocationId });
+                    table.PrimaryKey("PK_CitizenLocation", x => new { x.CitizensId, x.LocationsId });
                     table.ForeignKey(
-                        name: "FK_CitizenLocations_Citizens_CitizenId",
-                        column: x => x.CitizenId,
+                        name: "FK_CitizenLocation_Citizens_CitizensId",
+                        column: x => x.CitizensId,
                         principalTable: "Citizens",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CitizenLocations_Locations_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_CitizenLocation_Locations_LocationsId",
+                        column: x => x.LocationsId,
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CitizenLocations_LocationId",
-                table: "CitizenLocations",
-                column: "LocationId");
+                name: "IX_CitizenLocation_LocationsId",
+                table: "CitizenLocation",
+                column: "LocationsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CitizenLocations");
+                name: "CitizenLocation");
 
             migrationBuilder.DropTable(
                 name: "PHIs");

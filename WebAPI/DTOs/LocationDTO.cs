@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace WebAPI.Models
+namespace WebAPI.DTOs
 {
-    public class Location
+    public class LocationDTO
     {
         public int Id { get; set; }
         public string LocName { get; set; }
         public decimal? Longitude { get; set; }
         public decimal? Latitude { get; set; }
-        public ICollection<CitizenLocations> CitizenLocations { get; set; }
     }
-
 }

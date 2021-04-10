@@ -21,9 +21,5 @@ namespace WebAPI.DTOs
         public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
-        public HealthStatus HealthStatus { get; set; } = 0;
-        public string Address { get; set; }
-        public Location Location { get; set; }
-        public int Telephone { get; set; }
     }
 }
